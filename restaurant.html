@@ -25,6 +25,17 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        @keyframes stamp-in {
+            0% { opacity: 0; transform: rotate(-15deg) scale(3); }
+            50% { opacity: 1; transform: rotate(-15deg) scale(1); }
+            70% { transform: rotate(-15deg) scale(1.1); }
+            100% { transform: rotate(-15deg) scale(1); }
+        }
+        .stamp-animate {
+            animation: stamp-in 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            display: flex !important;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-dark h-screen overflow-hidden flex flex-col font-sans">
@@ -98,6 +109,35 @@
 
     <!-- Backdrop for sheet -->
     <div id="sheetBackdrop" onclick="toggleBottomProfile()" class="hidden fixed inset-0 bg-black/20 z-30"></div>
+
+    <!-- RESTAURANT ORDER DETAILS MODAL -->
+    <div id="resOrderDetailsModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity opacity-0" id="resDetailsModalBackdrop" onclick="closeResModal()"></div>
+        <div class="bg-white rounded-3xl p-0 w-[90%] max-w-sm shadow-2xl transform scale-95 opacity-0 transition-all duration-300 relative z-10 overflow-hidden" id="resDetailsModalContent">
+            <div class="bg-dark p-6 border-b border-gray-700 flex justify-between items-center text-white">
+                <h3 class="text-lg font-bold" id="resModalOrderId">Order #123</h3>
+                <button onclick="closeResModal()" class="p-2 hover:bg-white/10 rounded-full"><i data-lucide="x" class="w-5 h-5 text-white"></i></button>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
+                    <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold text-xl" id="resModalAvatar">A</div>
+                    <div>
+                        <h4 class="font-bold text-dark text-lg" id="resModalCustomer">Customer Name</h4>
+                        <p class="text-xs text-gray-400">Customer</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 mb-6">
+                     <div><p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-2">Order Items</p><div class="text-dark font-medium space-y-2" id="resModalItems">...</div></div>
+                     <div class="flex justify-between pt-4 border-t border-gray-100">
+                         <div><p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Time</p><p class="text-dark font-bold" id="resModalTime">...</p></div>
+                         <div class="text-right"><p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Total</p><p class="text-primary font-bold text-xl" id="resModalTotal">$0.00</p></div>
+                     </div>
+                </div>
+                <div id="resModalStatus" class="bg-gray-100 p-4 rounded-xl text-center font-bold text-gray-500 text-sm">Status: Delivered</div>
+            </div>
+        </div>
+    </div>
 
     <script src="js/shared.js"></script>
     <script src="js/restaurant.js"></script>

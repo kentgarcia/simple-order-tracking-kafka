@@ -12,34 +12,61 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Poppins', 'sans-serif'] },
-                    colors: { primary: '#FF6B6B', secondary: '#4ECDC4', dark: '#2D3436', light: '#F7F9FC', card: '#ffffff' },
-                    boxShadow: { 'soft': '0 10px 40px -10px rgba(0,0,0,0.08)' }
+                    colors: { 
+                        primary: '#FF0066', // Hot Pink
+                        secondary: '#FF4D94', 
+                        dark: '#1A1A1A', 
+                        light: '#FFF0F5', // Light Pinkish background
+                        card: '#ffffff' 
+                    },
+                    boxShadow: { 'soft': '0 20px 40px -10px rgba(255, 0, 102, 0.15)' },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    }
                 }
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>@keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }</style>
+    <style>
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #FF0066; border-radius: 4px; }
+        @keyframes slideIn { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes pulse-glow { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0px rgba(255, 0, 102, 0.4); } 50% { opacity: .5; box-shadow: 0 0 0 10px rgba(255, 0, 102, 0); } }
+    </style>
 </head>
-<body class="bg-gray-100 text-dark h-screen overflow-hidden flex flex-col font-sans">
+<body class="bg-gray-50 text-dark h-screen overflow-hidden flex flex-col font-sans">
 
     <!-- Header -->
-    <header class="bg-dark text-white px-6 pt-6 pb-20 rounded-b-[2.5rem] shadow-xl relative z-0">
-        <div class="flex justify-between items-center mb-6">
+    <header class="bg-gradient-to-br from-[#FF0066] to-[#C7004F] text-white px-6 pt-8 pb-16 rounded-b-[3rem] shadow-soft relative z-0 overflow-hidden">
+        <!-- Decor circles -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-2xl"></div>
+        <div class="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full -ml-10 -mb-10 blur-xl"></div>
+
+        <div class="flex justify-between items-center mb-8 relative z-10">
             <div>
-                <h1 class="text-2xl font-bold">Hello, Mike!</h1>
-                <p class="text-white/60 text-sm">Online • Looking for orders</p>
+                <h1 class="text-3xl font-extrabold tracking-tight">Rider<span class="text-white/80 font-light">App</span></h1>
+                <div class="flex items-center gap-2 mt-1">
+                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <p class="text-white/90 text-sm font-medium">Online • Tokyo District</p>
+                </div>
             </div>
-            <button onclick="toggleBottomProfile()" class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm border border-white/10">
-                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rider" class="w-8 h-8 rounded-full">
+            <button onclick="toggleBottomProfile()" class="w-12 h-12 rounded-full border-2 border-white/30 p-0.5 hover:scale-105 transition-transform">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rider" class="w-full h-full rounded-full bg-white/20">
             </button>
         </div>
         
-        <!-- Toggle -->
-        <div class="bg-white/10 p-1 rounded-xl backdrop-blur-md flex">
-            <button id="btn-rider-available" onclick="switchRiderTab('available')" class="rider-tab-btn flex-1 py-3 rounded-lg text-sm font-bold bg-white text-dark shadow-lg transition-all">Available</button>
-            <button id="btn-rider-active" onclick="switchRiderTab('active')" class="rider-tab-btn flex-1 py-3 rounded-lg text-sm font-bold text-white/70 hover:text-white transition-all">Active Task</button>
+        <!-- Tab Switcher -->
+        <div class="bg-black/20 p-1.5 rounded-2xl backdrop-blur-md flex relative z-10 mx-2">
+            <button id="btn-rider-available" onclick="switchRiderTab('available')" class="rider-tab-btn flex-1 py-3.5 rounded-xl text-sm font-bold bg-white text-primary shadow-lg transition-all flex items-center justify-center gap-2">
+                <i data-lucide="map-pin" class="w-4 h-4"></i> Available
+            </button>
+            <button id="btn-rider-active" onclick="switchRiderTab('active')" class="rider-tab-btn flex-1 py-3.5 rounded-xl text-sm font-bold text-white/80 hover:text-white transition-all flex items-center justify-center gap-2">
+                <i data-lucide="navigation" class="w-4 h-4"></i> Active Task
+            </button>
         </div>
     </header>
 

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Bites - Customer App</title>
+    
+    <!-- Tailwind & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    colors: { primary: '#FF6B6B', secondary: '#4ECDC4', dark: '#2D3436', light: '#F7F9FC', card: '#ffffff' },
+                    boxShadow: { 'soft': '0 10px 40px -10px rgba(0,0,0,0.08)' }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .cart-open { transform: translateX(0) !important; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    </style>
+</head>
+<body class="bg-light text-dark h-screen overflow-hidden flex font-sans">
+
+    <!-- Mobile Header (Hidden in desktop view generally, but kept for context if needed) -->
+    <!-- Based on latest request: Remove Header for Customer. We will rely on built-in navigation -->
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-light">
+        
+        <!-- Dynamic Content Container -->
+        <div id="mainContainer" class="flex-1 overflow-y-auto p-6 md:p-10 pb-40 scroll-smooth relative">
+            
+            <!-- VIEW: HOME -->
+            <div id="view-customer-home" class="page-view">
+                <!-- Greeting -->
+                <div class="mb-6 mt-4">
+                    <h1 class="text-2xl font-bold text-dark">Welcome Back, Alex 👋</h1>
+                    <p class="text-sm text-gray-500">Hungry? Let's get some food.</p>
+                </div>
+
+                <!-- Categories -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold text-dark mb-4">Categories</h3>
+                    <div class="flex gap-3 overflow-x-auto pb-4 scrollbar-hide px-1" id="categoryList"></div>
+                </div>
+
+                <!-- Food Grid -->
+                <div>
+                    <h3 class="text-lg font-bold text-dark mb-4">Popular Dishes</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="foodGrid"></div>
+                </div>
+            </div>
+
+            <!-- VIEW: TRACK ORDER -->
+            <div id="view-customer-track" class="page-view hidden h-full flex flex-col">
+                <h2 class="text-xl font-bold text-dark mb-6">Track Order</h2>
+                
+                <div id="track-order-content" class="bg-white rounded-3xl shadow-soft p-6 w-full h-full flex flex-col mx-auto transition-all">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
+                        <div>
+                            <p class="text-xs text-gray-500" id="track-order-id">Order #...</p>
+                            <h3 class="text-lg font-bold text-dark mt-1" id="track-order-items">Loading...</h3>
+                        </div>
+                        <span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-bold text-xs" id="track-order-eta">-- mins</span>
+                    </div>
+
+                    <!-- Animation -->
+                    <div id="lottie-container" class="w-full h-auto py-8 bg-gray-50 rounded-2xl mb-8 flex items-center justify-center overflow-hidden relative">
+                         <img id="track-animation" src="" alt="Status" class="h-48 w-auto mx-auto object-contain mix-blend-multiply">
+                        <p id="track-status-text" class="absolute bottom-2 left-0 w-full text-center text-sm font-bold text-gray-500 bg-white/80 backdrop-blur-sm py-1">Status...</p>
+                    </div>
+
+                    <!-- Steps -->
+                    <div class="space-y-6 relative pl-4 border-l-2 border-gray-100 ml-4 mb-8" id="track-steps"></div>
+                </div>
+
+                 <div id="track-order-empty" class="hidden text-center py-20">
+                    <i data-lucide="package-search" class="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
+                    <p class="text-gray-500">No active orders to track.</p>
+                    <button onclick="navigateTo('view-customer-home')" class="mt-4 text-primary font-bold hover:underline">Browse Menu</button>
+                 </div>
+            </div>
+
+            <!-- VIEW: HISTORY -->
+            <div id="view-customer-history" class="page-view hidden">
+                <h2 class="text-xl font-bold text-dark mb-6">Order History</h2>
+                <div class="space-y-3 max-w-3xl" id="customerHistoryList"></div>
+            </div>
+            
+        </div>
+
+        <!-- BOTTOM NAV -->
+        <div id="bottomNav" class="absolute bottom-0 w-full bg-white border-t border-gray-100 px-6 py-3 flex justify-between items-center z-30 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+            <button onclick="navigateTo('view-customer-home', this)" class="nav-btn text-primary relative flex flex-col items-center gap-1 p-2 rounded-xl flex-1">
+                <i data-lucide="home" class="w-6 h-6"></i><span class="text-[10px] font-medium">Home</span>
+            </button>
+            <button onclick="navigateTo('view-customer-track', this)" class="nav-btn text-gray-400 relative flex flex-col items-center gap-1 p-2 rounded-xl flex-1">
+                <i data-lucide="map-pin" class="w-6 h-6"></i><span class="text-[10px] font-medium">Track</span>
+            </button>
+            <button onclick="navigateTo('view-customer-history', this)" class="nav-btn text-gray-400 relative flex flex-col items-center gap-1 p-2 rounded-xl flex-1">
+                <i data-lucide="clock" class="w-6 h-6"></i><span class="text-[10px] font-medium">History</span>
+            </button>
+            <button onclick="toggleBottomProfile()" class="text-gray-400 relative flex flex-col items-center gap-1 p-2 rounded-xl flex-1">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" class="w-6 h-6 rounded-full bg-gray-100 border border-gray-200">
+                <span class="text-[10px] font-medium">Profile</span>
+            </button>
+        </div>
+
+        <!-- PROFILE SHEET -->
+        <div id="bottomProfileSheet" class="hidden absolute bottom-0 left-0 w-full bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-40 transform translate-y-full transition-transform duration-300">
+            <div class="p-2 flex justify-center w-full" onclick="toggleBottomProfile()">
+                <div class="w-12 h-1.5 bg-gray-200 rounded-full my-2"></div>
+            </div>
+            <div class="px-6 pb-8 pt-2">
+                <div class="flex items-center gap-4 mb-6 border-b border-gray-100 pb-6">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" class="w-16 h-16 rounded-full bg-primary/10">
+                    <div>
+                        <h3 class="font-bold text-xl text-dark">Alex Johnson</h3>
+                        <p class="text-sm text-gray-500">Customer View</p>
+                    </div>
+                </div>
+                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Switch App</h4>
+                <div class="flex flex-col gap-2">
+                    <a href="restaurant.html" class="w-full flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-white hover:shadow-md transition-all border border-transparent hover:border-gray-100 text-left">
+                        <div class="bg-white p-2 rounded-full shadow-sm text-secondary"><i data-lucide="layout-dashboard" class="w-5 h-5"></i></div>
+                        <span class="font-bold text-gray-700">Restaurant Dashboard</span>
+                    </a>
+                    <a href="rider.html" class="w-full flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-white hover:shadow-md transition-all border border-transparent hover:border-gray-100 text-left">
+                        <div class="bg-white p-2 rounded-full shadow-sm text-dark"><i data-lucide="bike" class="w-5 h-5"></i></div>
+                        <span class="font-bold text-gray-700">Rider Panel</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FLOATING CART BUTTON -->
+    <button onclick="toggleCart()" id="fabCart" class="absolute bottom-24 right-6 bg-dark text-white p-4 rounded-full shadow-2xl z-30 flex items-center justify-center transition-all duration-300">
+        <div class="relative">
+            <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+            <span id="fabCount" class="absolute -top-2 -right-2 bg-primary text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-dark hidden">0</span>
+        </div>
+    </button>
+
+    <!-- CART SIDEBAR -->
+    <aside id="cartSidebar" class="absolute inset-y-0 right-0 w-full md:w-[400px] bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col h-full">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between z-10">
+            <h2 class="text-xl font-bold text-dark">Your Order</h2>
+            <button onclick="toggleCart()" class="p-2 hover:bg-gray-100 rounded-full"><i data-lucide="x" class="w-6 h-6 text-dark"></i></button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6" id="cartItemsContainer"></div>
+        <div class="p-6 bg-gray-50 border-t border-gray-100">
+            <div class="flex justify-between font-bold text-lg text-dark mb-6"><span>Total</span><span id="totalPrice">$0.00</span></div>
+            <button onclick="checkout()" class="w-full bg-primary text-white py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all">Checkout</button>
+        </div>
+    </aside>
+
+    <div id="cartOverlay" onclick="toggleCart()" class="absolute inset-0 bg-black/20 backdrop-blur-sm z-40 hidden transition-opacity opacity-0"></div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toastContainer" class="fixed top-12 left-1/2 transform -translate-x-1/2 z-[100] flex flex-col items-center gap-4 w-full px-4 pointer-events-none"></div>
+
+    <!-- SUCCESS MODAL -->
+    <div id="orderSuccessModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity opacity-0" id="successModalBackdrop" onclick="closeModal('orderSuccessModal')"></div>
+        <div class="bg-white rounded-3xl p-8 w-[90%] max-w-sm shadow-2xl transform scale-95 opacity-0 transition-all duration-300 relative z-10 text-center" id="successModalContent">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"><i data-lucide="check" class="w-10 h-10 text-green-600"></i></div>
+            <h3 class="text-2xl font-bold text-dark mb-2">Order Placed!</h3>
+            <p class="text-gray-500 mb-8">Your food is being prepared.</p>
+            <div class="space-y-3">
+                <button onclick="closeModal('orderSuccessModal'); navigateTo('view-customer-track')" class="w-full bg-primary text-white py-3.5 rounded-xl font-bold shadow-lg">Track Order</button>
+                <button onclick="closeModal('orderSuccessModal')" class="w-full bg-gray-100 text-gray-600 py-3.5 rounded-xl font-bold">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ORDER DETAILS MODAL -->
+    <div id="orderDetailsModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity opacity-0" id="detailsModalBackdrop" onclick="closeModal('orderDetailsModal')"></div>
+        <div class="bg-white rounded-3xl p-0 w-[90%] max-w-sm shadow-2xl transform scale-95 opacity-0 transition-all duration-300 relative z-10 overflow-hidden" id="detailsModalContent">
+            <div class="bg-gray-50 p-6 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-dark" id="modalOrderId">Order #123</h3>
+                <button onclick="closeModal('orderDetailsModal')" class="p-2 hover:bg-gray-200 rounded-full"><i data-lucide="x" class="w-5 h-5 text-gray-500"></i></button>
+            </div>
+            <div class="p-6">
+                <div class="space-y-4 mb-6">
+                     <div><p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Items</p><p class="text-dark font-medium leading-relaxed" id="modalOrderItems">...</p></div>
+                     <div class="flex justify-between">
+                         <div><p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Date</p><p class="text-dark font-bold" id="modalOrderDate">...</p></div>
+                         <div class="text-right"><p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Total</p><p class="text-primary font-bold text-xl" id="modalOrderTotal">$0.00</p></div>
+                     </div>
+                </div>
+                <div id="modalOrderStatus" class="bg-gray-100 p-4 rounded-xl text-center font-bold text-gray-500 text-sm">Status: Delivered</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/shared.js"></script>
+    <script src="js/customer.js"></script>
+</body>
+</html>

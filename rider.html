@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Bites - Rider App</title>
+    
+    <!-- Tailwind & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    colors: { primary: '#FF6B6B', secondary: '#4ECDC4', dark: '#2D3436', light: '#F7F9FC', card: '#ffffff' },
+                    boxShadow: { 'soft': '0 10px 40px -10px rgba(0,0,0,0.08)' }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>@keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }</style>
+</head>
+<body class="bg-gray-100 text-dark h-screen overflow-hidden flex flex-col font-sans">
+
+    <!-- Header -->
+    <header class="bg-dark text-white px-6 pt-6 pb-20 rounded-b-[2.5rem] shadow-xl relative z-0">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-2xl font-bold">Hello, Mike!</h1>
+                <p class="text-white/60 text-sm">Online • Looking for orders</p>
+            </div>
+            <button onclick="toggleBottomProfile()" class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm border border-white/10">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rider" class="w-8 h-8 rounded-full">
+            </button>
+        </div>
+        
+        <!-- Toggle -->
+        <div class="bg-white/10 p-1 rounded-xl backdrop-blur-md flex">
+            <button id="btn-rider-available" onclick="switchRiderTab('available')" class="rider-tab-btn flex-1 py-3 rounded-lg text-sm font-bold bg-white text-dark shadow-lg transition-all">Available</button>
+            <button id="btn-rider-active" onclick="switchRiderTab('active')" class="rider-tab-btn flex-1 py-3 rounded-lg text-sm font-bold text-white/70 hover:text-white transition-all">Active Task</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 -mt-10 relative z-10 px-4 pb-20 overflow-y-auto">
+        <div id="view-rider-available" class="rider-view space-y-4">
+            <div id="riderAvailableList"></div>
+        </div>
+
+        <div id="view-rider-active" class="rider-view hidden">
+            <div id="riderMyList"></div>
+        </div>
+    </main>
+
+    <!-- PROFILE SHEET -->
+    <div id="bottomProfileSheet" class="hidden absolute bottom-0 left-0 w-full bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-40 transform translate-y-full transition-transform duration-300">
+        <div class="p-2 flex justify-center w-full" onclick="toggleBottomProfile()">
+            <div class="w-12 h-1.5 bg-gray-200 rounded-full my-2"></div>
+        </div>
+        <div class="px-6 pb-8 pt-2">
+            <div class="flex items-center gap-4 mb-6 border-b border-gray-100 pb-6">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rider" class="w-16 h-16 rounded-full bg-dark/10">
+                <div>
+                    <h3 class="font-bold text-xl text-dark">Mike Racer</h3>
+                    <p class="text-sm text-gray-500">Rider App</p>
+                </div>
+            </div>
+            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Switch App</h4>
+            <div class="flex flex-col gap-2">
+                <a href="customer.html" class="w-full flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-white hover:shadow-md transition-all border border-transparent hover:border-gray-100 text-left">
+                    <div class="bg-white p-2 rounded-full shadow-sm text-primary"><i data-lucide="utensils" class="w-5 h-5"></i></div>
+                    <span class="font-bold text-gray-700">Customer App</span>
+                </a>
+                <a href="restaurant.html" class="w-full flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-white hover:shadow-md transition-all border border-transparent hover:border-gray-100 text-left">
+                    <div class="bg-white p-2 rounded-full shadow-sm text-secondary"><i data-lucide="layout-dashboard" class="w-5 h-5"></i></div>
+                    <span class="font-bold text-gray-700">Restaurant Dashboard</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Backdrop -->
+    <div id="sheetBackdrop" onclick="toggleBottomProfile()" class="hidden fixed inset-0 bg-black/20 z-30"></div>
+
+    <script src="js/shared.js"></script>
+    <script src="js/rider.js"></script>
+    <script>
+        const originalToggle = toggleBottomProfile;
+        toggleBottomProfile = function() {
+            const backdrop = document.getElementById('sheetBackdrop');
+            const sheet = document.getElementById('bottomProfileSheet');
+            if (sheet.classList.contains('translate-y-full') || sheet.classList.contains('hidden')) {
+                backdrop.classList.remove('hidden');
+                originalToggle();
+            } else {
+                backdrop.classList.add('hidden');
+                originalToggle();
+            }
+        }
+    </script>
+</body>
+</html>

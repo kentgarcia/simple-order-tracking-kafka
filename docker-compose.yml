@@ -1,8 +1,6 @@
 # Docker Compose for Kafka - Simple School Demo Setup
 # Run: docker-compose up -d
 
-version: '3.8'
-
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0

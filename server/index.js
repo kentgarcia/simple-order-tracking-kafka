@@ -33,13 +33,14 @@ const kafka = new Kafka({
     clientId: 'gourmet-bites-server',
     brokers: [KAFKA_BROKER],
     retry: {
-        initialRetryTime: 100,
-        retries: 8
+        initialRetryTime: 300,
+        retries: 10
     }
 });
 
 const producer = kafka.producer();
 const consumer = kafka.consumer({ groupId: 'gourmet-group' });
+const admin = kafka.admin();
 
 // Store connected WebSocket clients
 const clients = new Set();
@@ -237,6 +238,27 @@ async function start() {
     console.log('═══════════════════════════════════════════════════════════\n');
     
     try {
+        // Connect Admin to create topics explicitly
+        console.log('🔧 Connecting to Kafka Admin...');
+        await admin.connect();
+        const existingTopics = await admin.listTopics();
+        const topicsToCreate = Object.values(TOPICS).filter(t => !existingTopics.includes(t));
+
+        if (topicsToCreate.length > 0) {
+            console.log(`🔨 Creating topics: ${topicsToCreate.join(', ')}`);
+            await admin.createTopics({
+                topics: topicsToCreate.map(topic => ({
+                    topic,
+                    numPartitions: 1,
+                    replicationFactor: 1
+                }))
+            });
+            console.log('✅ Topics created successfully');
+        } else {
+            console.log('✅ Topics already exist');
+        }
+        await admin.disconnect();
+
         // Connect producer
         await producer.connect();
         console.log('📤 Kafka Producer connected to', KAFKA_BROKER);
